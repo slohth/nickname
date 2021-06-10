@@ -38,6 +38,8 @@ public abstract class Menu implements Listener {
         pattern.clear();
     }
 
+    public int firstEmpty() { return this.inventory.firstEmpty(); }
+
     public void setItem(int slot, ItemStack item) { items.put(slot, item); }
 
     public void setButton(int slot, Button button) { buttons.put(slot, button); }
