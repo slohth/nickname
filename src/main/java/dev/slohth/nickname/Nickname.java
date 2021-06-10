@@ -65,7 +65,9 @@ public final class Nickname extends JavaPlugin {
             case "v1_16_R3": {
                 this.fieldName = "bJ"; break;
             }
+
         }
+        this.lp.getGroupManager().loadAllGroups();
 
     }
 
