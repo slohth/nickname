@@ -4,6 +4,8 @@ import dev.slohth.nickname.command.Test;
 import dev.slohth.nickname.database.SQLManager;
 import dev.slohth.nickname.user.listener.UserListener;
 import dev.slohth.nickname.user.manager.UserManager;
+import dev.slohth.nickname.utils.vsc.NMSHandler;
+import dev.slohth.nickname.utils.vsc.VersionControl;
 import dev.slohth.nickname.utils.framework.command.Framework;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
@@ -13,9 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Nickname extends JavaPlugin {
 
     private Framework framework;
+    private NMSHandler nms;
 
     private String fieldName = "";
-    private String version = "";
     private LuckPerms lp;
 
     private SQLManager sqlManager;
@@ -23,7 +25,15 @@ public final class Nickname extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        String a = Bukkit.getServer().getClass().getPackage().getName();
+        VersionControl.version = a.substring(a.lastIndexOf('.') + 1);
+
         this.framework = new Framework(this);
+        try {
+            this.nms = (NMSHandler) Class.forName("dev.slohth.nickname.utils.vsc.handlers.NMSHandler_" + VersionControl.version.substring(1)).newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) { this.lp = provider.getProvider(); } else { Bukkit.getPluginManager().disablePlugin(this); }
@@ -34,10 +44,7 @@ public final class Nickname extends JavaPlugin {
 
         new Test(this);
 
-        String a = Bukkit.getServer().getClass().getPackage().getName();
-        this.version = a.substring(a.lastIndexOf('.') + 1);
-
-        switch (this.version) {
+        switch (VersionControl.version) {
             case "v1_8_R1": {
                 this.fieldName = "bF"; break;
             }
@@ -88,4 +95,8 @@ public final class Nickname extends JavaPlugin {
     public UserManager getUserManager() { return this.userManager; }
 
     public Framework getFramework() { return this.framework; }
+
+    public NMSHandler getNms() {
+        return nms;
+    }
 }

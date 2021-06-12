@@ -4,24 +4,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ColoredString {
 
-    public static List<ChatColor> getColors(String str) {
-        //let say str = "§ahello"  which is green color, but the § sign is invisible
-
-        List<ChatColor> list = new ArrayList<>();
-
-        //loop through the text
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == ChatColor.COLOR_CHAR) {
-                char id = str.charAt(i + 1);//getting the color code id, &a is green, &b is aqua ....
-                list.add(ChatColor.getByChar(id));
+    public static ChatColor getColorOf(String text) {
+        text = text.replace('§', '&');
+        Map<ChatColor, Integer> colors = new HashMap<>();
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                ChatColor c = ChatColor.getByChar(text.charAt(i + 1));
+                colors.put(c, colors.containsKey(c) ? colors.get(c) + 1 : 1);
             }
         }
-        return list;
+        if (colors.isEmpty()) return ChatColor.WHITE;
+        ChatColor c = colors.keySet().stream().findFirst().get();
+        for (ChatColor color : colors.keySet()) if (colors.get(color) >= colors.get(c)) c = color;
+        return c;
     }
 
     public static Color getColor(ChatColor chatColor) {

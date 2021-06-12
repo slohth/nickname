@@ -11,4 +11,6 @@ public abstract class Button {
 
     public ItemStack getIcon() { return this.icon; }
 
+    public Button setIcon(ItemStack icon) { this.icon = icon; return this; }
+
 }

@@ -9,9 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public abstract class Menu implements Listener {
 
     private final Nickname core;
 
-    private final Inventory inventory;
+    private Inventory inventory;
     private final int rows;
     private final String title;
 
@@ -35,18 +37,29 @@ public abstract class Menu implements Listener {
     public void applyMenuPattern(ShapedMenuPattern pattern) {
         this.items.putAll(pattern.getItems());
         this.buttons.putAll(pattern.getButtons());
-        pattern.clear();
     }
 
-    public int firstEmpty() { return this.inventory.firstEmpty(); }
+    public int firstEmpty() {
+        for (int i = 0; i < this.rows * 9; i++) {
+            if (this.items.containsKey(i) || this.buttons.containsKey(i)) continue;
+            return i;
+        }
+        return this.rows * 9;
+    }
+
+    public void setInventoryType(InventoryType type) {
+        this.inventory = Bukkit.createInventory(null, type, this.title);
+    }
 
     public void setItem(int slot, ItemStack item) { items.put(slot, item); }
+
+    public ItemStack getItem(int slot) { return this.inventory.getItem(slot); };
 
     public void setButton(int slot, Button button) { buttons.put(slot, button); }
 
     public Menu build() {
-        for (int i : items.keySet()) inventory.setItem(i, items.get(i));
-        for (int i : buttons.keySet()) inventory.setItem(i, buttons.get(i).getIcon());
+        if (!items.isEmpty()) for (int i : items.keySet()) inventory.setItem(i, items.get(i));
+        if (!buttons.isEmpty()) for (int i : buttons.keySet()) inventory.setItem(i, buttons.get(i).getIcon());
         return this;
     }
 
@@ -59,7 +72,7 @@ public abstract class Menu implements Listener {
     public void close() {
         InventoryCloseEvent.getHandlerList().unregister(this);
         this.items.clear(); this.buttons.clear();
-        Bukkit.getScheduler().runTaskLater(core, () -> { for (HumanEntity e : this.inventory.getViewers()) e.closeInventory(); }, 1);
+        Bukkit.getScheduler().runTaskLater(core, () -> { for (HumanEntity e : new ArrayList<>(this.inventory.getViewers())) e.closeInventory(); }, 1);
     }
 
     @EventHandler

@@ -12,14 +12,141 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="Maven: org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT">
+      <library name="Maven: org.spigotmc:spigot-v1_8_R1:v1_8_R1">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/spigot-1.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_8_R1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_8_R2:v1_8_R2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_8_R2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_8_R3:v1_8_R3">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_8_R3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_9_R1:v1_9_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_9_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_9_R2:v1_9_R2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_9_R2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_10_R1:v1_10_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_10_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_11_R1:v1_11_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_11_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_12_R1:v1_12_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_12_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_13_R1:v1_13_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_13_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_13_R2:v1_13_R2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_13_R2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_14_R1:v1_14_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_14_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_15_R1:v1_15_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_15_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_16_R1:v1_16_R1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_16_R1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_16_R2:v1_16_R2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_16_R2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.spigotmc:spigot-v1_16_R3:v1_16_R3">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/nms/v1_16_R3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: net.wesjd:anvilgui:1.5.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.luckperms:api:5.3" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.40" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />

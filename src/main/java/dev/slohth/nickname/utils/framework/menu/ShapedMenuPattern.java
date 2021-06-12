@@ -17,14 +17,18 @@ public class ShapedMenuPattern {
     }
 
     public void set(char c, ItemStack item) {
-        for (char icon : icons) if (icon == c) items.put(icons.indexOf(c), item);
+        int index = 0;
+        for (char icon : icons) { if (icon == c) { items.put(index, item); } index++; }
     }
 
     public void set(char c, Button button) {
-        for (char icon : icons) if (icon == c) buttons.put(icons.indexOf(c), button);
+        int index = 0;
+        for (char icon : icons) { if (icon == c) { buttons.put(index, button); } index++; }
     }
 
-    public void setPattern(char[]... rows) { for (char[] row : rows) for (char c : row) icons.add(c); }
+    public void setPattern(char[][] rows) {
+        for (char[] row : rows) for (char c : row) icons.add(c);
+    }
 
     public void clear() { icons.clear(); items.clear(); buttons.clear(); }
 

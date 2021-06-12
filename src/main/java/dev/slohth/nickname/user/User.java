@@ -3,6 +3,7 @@ package dev.slohth.nickname.user;
 import com.mojang.authlib.GameProfile;
 import dev.slohth.nickname.Nickname;
 import dev.slohth.nickname.nick.Nick;
+import dev.slohth.nickname.utils.framework.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -28,6 +29,10 @@ public class User {
 
     public void load() {
 
+    }
+
+    public void openMenu(Menu menu) {
+        menu.open(this.getPlayer());
     }
 
     public UUID getUuid() { return this.uuid; }
