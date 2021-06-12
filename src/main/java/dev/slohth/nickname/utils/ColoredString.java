@@ -11,17 +11,13 @@ public class ColoredString {
     public static List<ChatColor> getColors(String str) {
         //let say str = "§ahello"  which is green color, but the § sign is invisible
 
-        List<ChatColor> list = new ArrayList<ChatColor>();
-        String str1 = str.replace(ChatColor.COLOR_CHAR, '&');
-
-        //then str1 = "&ahello", now the & sign is visible which would be easier for you to debug
-
+        List<ChatColor> list = new ArrayList<>();
 
         //loop through the text
-        for (int i = 0; i < str1.length(); i++) {
-            char c = str1.charAt(i);
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
             if (c == ChatColor.COLOR_CHAR) {
-                char id = str1.charAt(i + 1);//getting the color code id, &a is green, &b is aqua ....
+                char id = str.charAt(i + 1);//getting the color code id, &a is green, &b is aqua ....
                 list.add(ChatColor.getByChar(id));
             }
         }

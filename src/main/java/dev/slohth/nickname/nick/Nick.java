@@ -66,6 +66,7 @@ public class Nick {
                 new char[] { '&', ' ', '&', ' ', '&', ' ', '&', ' ', '&' }
         );
         pattern.set('&', new ItemBuilder(Material.STAINED_GLASS_PANE, 7).name(" ").build());
+        menu.applyMenuPattern(pattern);
 
         Set<Group> groups = core.getLp().getGroupManager().getLoadedGroups();
         for (Group group : groups) {
@@ -86,9 +87,10 @@ public class Nick {
             menu.setButton(menu.firstEmpty(), button);
         }
 
-
-        menu.applyMenuPattern(pattern);
+        menu.open(this.user.getPlayer());
     }
+
+
 
     private void sendUpdatePackets() {
         CraftPlayer cp = ((CraftPlayer) this.user.getPlayer());

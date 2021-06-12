@@ -1,14 +1,18 @@
 package dev.slohth.nickname;
 
+import dev.slohth.nickname.command.Test;
 import dev.slohth.nickname.database.SQLManager;
 import dev.slohth.nickname.user.listener.UserListener;
 import dev.slohth.nickname.user.manager.UserManager;
+import dev.slohth.nickname.utils.framework.command.Framework;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Nickname extends JavaPlugin {
+
+    private Framework framework;
 
     private String fieldName = "";
     private String version = "";
@@ -19,12 +23,16 @@ public final class Nickname extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.framework = new Framework(this);
+
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) { this.lp = provider.getProvider(); } else { Bukkit.getPluginManager().disablePlugin(this); }
 
         this.sqlManager = new SQLManager(this);
         this.userManager = new UserManager(this);
         new UserListener(this);
+
+        new Test(this);
 
         String a = Bukkit.getServer().getClass().getPackage().getName();
         this.version = a.substring(a.lastIndexOf('.') + 1);
@@ -79,4 +87,5 @@ public final class Nickname extends JavaPlugin {
 
     public UserManager getUserManager() { return this.userManager; }
 
+    public Framework getFramework() { return this.framework; }
 }
