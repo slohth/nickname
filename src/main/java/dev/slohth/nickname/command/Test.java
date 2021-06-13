@@ -13,10 +13,15 @@ public class Test {
 
     public Test(Nickname core) { this.core = core; core.getFramework().registerCommands(this); }
 
-    @Command(name = "nick")
+    @Command(name = "nick", permission = "nick.use")
     public void nickCommand(Args cmd) {
         Player player = cmd.getPlayer();
         User user = core.getUserManager().get(player.getUniqueId());
+
+        if (user.getNick() != null) {
+            user.msg("&cYou are already nicked!");
+        }
+
         Nick nick = new Nick(core, user);
         nick.openRankSelectionMenu();
     }

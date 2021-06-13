@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -30,13 +29,20 @@ public class Nick {
     private User user;
     private String rank;
     private String name;
-    private String skin;
+
+    private String skin = "MHF_Steve";
+    private String[] skinData = null;
 
     public Nick(Nickname core, User user) {
         this.core = core; this.user = user;
     }
 
-    public void apply() { core.getNms().applyNickname(this.user, this); }
+    public void apply() {
+
+
+
+        core.getNms().applyNickname(this.user, this);
+    }
 
     public void openRankSelectionMenu() {
         Menu menu = new Menu(core, "Select a rank!", 4) {};
@@ -104,14 +110,15 @@ public class Nick {
         pattern.set('M', new Button() {
             @Override
             public void clicked(Player player) {
+                menu.close();
                 AnvilGUI.Builder builder = new AnvilGUI.Builder().plugin(core).text("Enter a name").title("Select a name!")
                         .itemLeft(new ItemBuilder(Material.NAME_TAG).name("&d&l(!) &dEnter a name!").build())
                         .onClose(p -> user.openMenu(menu)).onComplete((p, text) -> {
                             if (MojangUtil.isValidProfile(text) && !Bukkit.getOfflinePlayer(text).hasPlayedBefore()) {
-                                name = text; Bukkit.getScheduler().runTaskLater(core, Nick.this::openSkinSelectionMenu, 1);
+                                name = text; Bukkit.getScheduler().runTaskLater(core, () -> openNameSelectionMenu(text), 1);
                                 return AnvilGUI.Response.close();
                             } else {
-                                return AnvilGUI.Response.text("Invalid name!");
+                                return AnvilGUI.Response.text(CC.trns("&cInvalid name!"));
                             }
                         });
                 builder.open(player);
@@ -131,15 +138,15 @@ public class Nick {
             public void clicked(Player player) {
                 menu.close();
             }
-        }.setIcon(new ItemBuilder(Material.INK_SACK, 1).name("&cCancel").build()));
+        }.setIcon(new ItemBuilder(Material.INK_SACK, 1).name("&c&l(!) &cCancel").build()));
 
         pattern.set('Y', new Button() {
             @Override
             public void clicked(Player player) {
                 menu.close();
-                // open skin menu
+                openSkinSelectionMenu();
             }
-        }.setIcon(new ItemBuilder(Material.INK_SACK, 10).name("&aConfirm").build()));
+        }.setIcon(new ItemBuilder(Material.INK_SACK, 10).name("&a&l(!) &aConfirm").build()));
 
         menu.applyMenuPattern(pattern);
 
@@ -149,7 +156,62 @@ public class Nick {
     }
 
     public void openSkinSelectionMenu() {
+        Menu menu = new Menu(core, "Select a skin!", 5) {};
 
+        ShapedMenuPattern pattern = new ShapedMenuPattern(
+                new char[] { '&', '&', ' ', ' ', '*', ' ', ' ', '&', '&' },
+                new char[] { '&', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '&' },
+                new char[] { '&', ' ', 'S', ' ', 'O', ' ', 'R', ' ', '&' },
+                new char[] { '&', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '&' },
+                new char[] { '&', '&', ' ', ' ', 'N', ' ', ' ', '&', '&' }
+        );
+
+        pattern.set('&', new ItemBuilder(Material.STAINED_GLASS_PANE, 7).name(" ").build());
+        pattern.set('*', new ItemBuilder(Material.BOOK).name("&d&l(!) &dInformation").lore(
+                "&7Here you can select a skin to nick as",
+                "&7You will appear as this skin in-game",
+                " ",
+                "&7You can either choose:",
+                "&8* &7Steve skin",
+                "&8* &7Your own skin",
+                "&8* &7A random skin",
+                " ",
+                "&7To confirm, press the respective skull"
+        ).glow().build());
+
+        pattern.set('S', new Button() {
+            @Override
+            public void clicked(Player player) {
+                skin = "MHF_Steve"; menu.close();
+                Bukkit.getScheduler().runTaskLater(core, Nick.this::apply, 1);
+            }
+        }.setIcon(new ItemBuilder(Material.SKULL_ITEM, 3).setSkull("MHF_Steve").name("&d&l(!) &dSteve skin").lore("&7Select the steve skin!").build()));
+
+        pattern.set('O', new Button() {
+            @Override
+            public void clicked(Player player) {
+                skin = user.getTrueName(); menu.close();
+                Bukkit.getScheduler().runTaskLater(core, Nick.this::apply, 1);
+            }
+        }.setIcon(new ItemBuilder(Material.SKULL_ITEM, 3).setSkull(user.getTrueName()).name("&d&l(!) &dOwn skin").lore("&7Select your own skin!").build()));
+
+        pattern.set('R', new Button() {
+            @Override
+            public void clicked(Player player) {
+                skinData = RandomNick.SKIN.get(); menu.close();
+                Bukkit.getScheduler().runTaskLater(core, Nick.this::apply, 1);
+            }
+        }.setIcon(new ItemBuilder(Material.SKULL_ITEM, 3).texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").name("&d&l(!) &dRandom skin").lore("&7Select a random skin!").build()));
+
+        pattern.set('N', new Button() {
+            @Override
+            public void clicked(Player player) {
+                menu.close();
+            }
+        }.setIcon(new ItemBuilder(Material.INK_SACK, 1).name("&c&l(!) &cCancel").build()));
+
+        menu.applyMenuPattern(pattern);
+        this.user.openMenu(menu.build());
     }
 
     public String getName() {
@@ -162,5 +224,16 @@ public class Nick {
 
     public String getSkin() {
         return skin;
+    }
+
+    public String[] getSkinData() {
+        return skinData;
+    }
+
+    public void remove() {
+        // luckperms
+        this.rank = null; this.name = null; this.skin = null; this.skinData = null;
+        this.user.setProfile(this.user.getProfile());
+        this.user.setNick(null);
     }
 }

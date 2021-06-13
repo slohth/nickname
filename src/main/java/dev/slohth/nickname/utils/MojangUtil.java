@@ -49,6 +49,7 @@ public class MojangUtil {
     }
 
     public static String[] getData(String name) {
+        if (!cache.containsKey(name.toLowerCase())) isValidProfile(name.toLowerCase());
         return new String[] { cache.get(name.toLowerCase()).get(0), cache.get(name.toLowerCase()).get(1) };
     }
 

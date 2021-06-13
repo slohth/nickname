@@ -17,7 +17,6 @@ public final class Nickname extends JavaPlugin {
     private Framework framework;
     private NMSHandler nms;
 
-    private String fieldName = "";
     private LuckPerms lp;
 
     private SQLManager sqlManager;
@@ -46,47 +45,46 @@ public final class Nickname extends JavaPlugin {
 
         switch (VersionControl.version) {
             case "v1_8_R1": {
-                this.fieldName = "bF"; break;
+                VersionControl.fieldName = "bF"; break;
             }
             case "v1_8_R2":
             case "v1_8_R3": {
-                this.fieldName = "bH"; break;
+                VersionControl.fieldName = "bH"; break;
             }
             case "v1_9_R1": {
-                this.fieldName = "bR"; break;
+                VersionControl.fieldName = "bR"; break;
             }
             case "v1_9_R2":
             case "v1_11_R1": {
-                this.fieldName = "bS"; break;
+                VersionControl.fieldName = "bS"; break;
             }
             case "v1_10_R1":
             case "v1_15_R1": {
-                this.fieldName = "bT"; break;
+                VersionControl.fieldName = "bT"; break;
             }
             case "v1_12_R1": {
-                this.fieldName = "g"; break;
+                VersionControl.fieldName = "g"; break;
             }
             case "v1_13_R1":
             case "v1_13_R2": {
-                this.fieldName = "h"; break;
+                VersionControl.fieldName = "h"; break;
             }
             case "v1_14_R1": {
-                this.fieldName = "bV"; break;
+                VersionControl.fieldName = "bV"; break;
             }
             case "v1_16_R1": {
-                this.fieldName = "bQ"; break;
+                VersionControl.fieldName = "bQ"; break;
             }
             case "v1_16_R2":
             case "v1_16_R3": {
-                this.fieldName = "bJ"; break;
+                VersionControl.fieldName = "bJ"; break;
             }
-
+            default:
+                VersionControl.fieldName = "cs";
         }
         this.lp.getGroupManager().loadAllGroups();
 
     }
-
-    public String getFieldName() { return this.fieldName; }
 
     public LuckPerms getLp() { return this.lp;  }
 

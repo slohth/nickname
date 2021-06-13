@@ -17,9 +17,7 @@ public class UserListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(core, () -> {
-            core.getUserManager().register(e.getPlayer().getUniqueId());
-        }, 1);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(core, () -> core.getUserManager().register(e.getPlayer().getUniqueId()), 1);
     }
 
 }
