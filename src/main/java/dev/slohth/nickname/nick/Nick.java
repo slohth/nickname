@@ -10,7 +10,9 @@ import dev.slohth.nickname.utils.MojangUtil;
 import dev.slohth.nickname.utils.framework.menu.Button;
 import dev.slohth.nickname.utils.framework.menu.Menu;
 import dev.slohth.nickname.utils.framework.menu.ShapedMenuPattern;
+import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.group.Group;
+import net.luckperms.api.node.Node;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,9 +28,11 @@ public class Nick {
 
     private final Nickname core;
 
-    private User user;
-    private String rank;
+    private final User user;
+
     private String name;
+
+    private String rank;
 
     private String skin = "MHF_Steve";
     private String[] skinData = null;
@@ -37,9 +41,14 @@ public class Nick {
         this.core = core; this.user = user;
     }
 
+    public Nick(Nickname core, User user, String name, String[] skin, String nickedRank) {
+        this.core = core; this.user = user; this.name = name; this.rank = nickedRank; this.skinData = skin;
+        this.apply();
+    }
+
     public void apply() {
-
-
+        for (String rank : this.user.getRanks()) this.user.getUser().data().remove(Node.builder("tab.sort." + rank).build());
+        this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).build());
 
         core.getNms().applyNickname(this.user, this);
     }
@@ -231,7 +240,9 @@ public class Nick {
     }
 
     public void remove() {
-        // luckperms
+        this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).build());
+        for (String rank : this.user.getRanks()) this.user.getUser().data().add(Node.builder("tab.sort." + rank).build());
+
         this.rank = null; this.name = null; this.skin = null; this.skinData = null;
         this.user.setProfile(this.user.getProfile());
         this.user.setNick(null);

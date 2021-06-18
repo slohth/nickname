@@ -45,7 +45,7 @@ public class SQLManager {
             e.printStackTrace();
         }
 
-        execStatement("CREATE TABLE IF NOT EXISTS `nicknames` (`uuid` VARCHAR(36), `name` VARCHAR(16), `skin` VARCHAR(16), `rank` VARCHAR(32), `old-rank` VARCHAR(32))");
+        execStatement("CREATE TABLE IF NOT EXISTS `active-nicknames` (`uuid` VARCHAR(36), `name` VARCHAR(16), `skin` TEXT, `rank` VARCHAR(32))");
     }
 
     private void establishConnection() throws SQLException {
