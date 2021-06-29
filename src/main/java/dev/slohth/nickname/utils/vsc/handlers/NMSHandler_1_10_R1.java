@@ -24,15 +24,17 @@ public class NMSHandler_1_10_R1 implements NMSHandler {
     public void applyNickname(User user, Nick nick) {
 
         String[] data = nick.getSkinData() == null ? MojangUtil.getData(nick.getSkin()) : nick.getSkinData();
-        CraftPlayer player = ((CraftPlayer) user.getPlayer());
 
         GameProfile profile = new GameProfile(user.getUuid(), nick.getName());
         profile.getProperties().put("textures", new Property("textures", data[0], data[1]));
         user.setProfile(profile);
 
-        // luckperms
+        this.applyPackets(user);
+    }
 
-        EntityPlayer ep = player.getHandle();
+    @Override
+    public void applyPackets(User user) {
+        EntityPlayer ep = ((CraftPlayer) user.getPlayer()).getHandle();
         PacketPlayOutEntityDestroy destroyEntity = new PacketPlayOutEntityDestroy(ep.getId());
         PacketPlayOutPlayerInfo removePlayer = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, ep);
         PacketPlayOutPlayerInfo addPlayer = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, ep);

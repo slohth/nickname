@@ -10,7 +10,6 @@ import dev.slohth.nickname.utils.MojangUtil;
 import dev.slohth.nickname.utils.framework.menu.Button;
 import dev.slohth.nickname.utils.framework.menu.Menu;
 import dev.slohth.nickname.utils.framework.menu.ShapedMenuPattern;
-import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.Node;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -47,10 +46,25 @@ public class Nick {
     }
 
     public void apply() {
-        for (String rank : this.user.getRanks()) this.user.getUser().data().remove(Node.builder("tab.sort." + rank).build());
-        this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).build());
+        boolean changed = false;
+        for (String rank : this.user.getRanks()) {
+            if (rank.equals(this.rank)) changed = true;
+            this.user.getUser().data().remove(Node.builder("tab.sort." + rank).value(true).build());
+            this.user.getUser().data().add(Node.builder("tab.sort." + rank).value(false).build());
+            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + rank).value(true).build());
+            this.user.getUser().data().add(Node.builder("rocketplaceholder." + rank).value(false).build());
+        }
+        if (changed) {
+            this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).value(false).build());
+            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + this.rank).value(false).build());
+        }
+        this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).value(true).build());
+        this.user.getUser().data().add(Node.builder("rocketplaceholder." + this.rank).value(true).build());
+        core.getLp().getUserManager().saveUser(this.user.getUser());
 
+        this.user.setNick(this);
         core.getNms().applyNickname(this.user, this);
+        this.user.msg("&aYou are now nicked as " + core.getLp().getGroupManager().getGroup(this.rank).getDisplayName() + " " + this.name);
     }
 
     public void openRankSelectionMenu() {
@@ -240,11 +254,25 @@ public class Nick {
     }
 
     public void remove() {
-        this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).build());
-        for (String rank : this.user.getRanks()) this.user.getUser().data().add(Node.builder("tab.sort." + rank).build());
+        boolean changed = false;
+        for (String rank : this.user.getRanks()) {
+            if (rank.equals(this.rank)) changed = true;
+            this.user.getUser().data().remove(Node.builder("tab.sort." + rank).value(false).build());
+            this.user.getUser().data().add(Node.builder("tab.sort." + rank).value(true).build());
+            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + rank).value(false).build());
+            this.user.getUser().data().add(Node.builder("rocketplaceholder." + rank).value(true).build());
+        }
+        if (!changed) {
+            this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).value(true).build());
+            this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).value(false).build());
+            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + this.rank).value(true).build());
+            this.user.getUser().data().add(Node.builder("rocketplaceholder." + this.rank).value(false).build());
+        }
+        core.getLp().getUserManager().saveUser(this.user.getUser());
 
         this.rank = null; this.name = null; this.skin = null; this.skinData = null;
         this.user.setProfile(this.user.getProfile());
         this.user.setNick(null);
+        core.getNms().applyPackets(this.user);
     }
 }

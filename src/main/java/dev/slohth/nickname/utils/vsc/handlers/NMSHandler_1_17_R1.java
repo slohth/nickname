@@ -77,6 +77,11 @@ public class NMSHandler_1_17_R1 implements NMSHandler {
     }
 
     @Override
+    public void applyPackets(User user) {
+        return;
+    }
+
+    @Override
     public GameProfile getProfile(Player player) {
         return null;
     }

@@ -13,4 +13,6 @@ public interface NMSHandler {
 
     void setProfile(GameProfile profile, Player player);
 
+    void applyPackets(User user);
+
 }

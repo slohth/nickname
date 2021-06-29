@@ -24,4 +24,8 @@ public class UserManager {
         return null;
     }
 
+    public void remove(User user) {
+        this.users.remove(user);
+    }
+
 }
