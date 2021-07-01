@@ -10,6 +10,8 @@ import dev.slohth.nickname.utils.MojangUtil;
 import dev.slohth.nickname.utils.framework.menu.Button;
 import dev.slohth.nickname.utils.framework.menu.Menu;
 import dev.slohth.nickname.utils.framework.menu.ShapedMenuPattern;
+import net.luckperms.api.context.ContextSet;
+import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.Node;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -19,9 +21,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public class Nick {
 
@@ -36,6 +38,9 @@ public class Nick {
     private String skin = "MHF_Steve";
     private String[] skinData = null;
 
+    private Set<Node> nodesAdded = new HashSet<>();
+    private Set<Node> nodesRemoved = new HashSet<>();
+
     public Nick(Nickname core, User user) {
         this.core = core; this.user = user;
     }
@@ -46,21 +51,29 @@ public class Nick {
     }
 
     public void apply() {
-        boolean changed = false;
-        for (String rank : this.user.getRanks()) {
-            if (rank.equals(this.rank)) changed = true;
-            this.user.getUser().data().remove(Node.builder("tab.sort." + rank).value(true).build());
-            this.user.getUser().data().add(Node.builder("tab.sort." + rank).value(false).build());
-            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + rank).value(true).build());
-            this.user.getUser().data().add(Node.builder("rocketplaceholder." + rank).value(false).build());
+
+        List<String> groups = new ArrayList<>();
+        for (Group group : core.getLp().getGroupManager().getLoadedGroups()) {
+            if (user.getPlayer().hasPermission("group." + group.getName())) groups.add(group.getName());
         }
-        if (changed) {
-            this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).value(false).build());
-            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + this.rank).value(false).build());
+
+        boolean b = false;
+        for (String rank : groups) {
+            if (this.rank.equals(rank)) { b = true; continue; }
+            this.nodesAdded.add(Node.builder("tab.sort." + rank).value(false).build());
+            this.nodesAdded.add(Node.builder("rocketplaceholder." + rank).value(false).build());
         }
-        this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).value(true).build());
-        this.user.getUser().data().add(Node.builder("rocketplaceholder." + this.rank).value(true).build());
-        core.getLp().getUserManager().saveUser(this.user.getUser());
+        if (!b) {
+            this.nodesAdded.add(Node.builder("tab.sort." + this.rank).value(true).build());
+            this.nodesAdded.add(Node.builder("rocketplaceholder." + this.rank).value(true).build());
+        }
+
+        for (Node node : nodesAdded) user.getUser().data().add(node);
+        for (Node node : nodesRemoved) user.getUser().data().remove(node);
+
+        core.getLp().getUserManager().saveUser(user.getUser()).thenRun(() -> {
+            core.getLp().getMessagingService().ifPresent(service -> { service.pushUserUpdate(user.getUser()); });
+        });
 
         this.user.setNick(this);
         core.getNms().applyNickname(this.user, this);
@@ -80,6 +93,23 @@ public class Nick {
 
         Set<Group> groups = core.getLp().getGroupManager().getLoadedGroups();
         for (Group group : groups) {
+            boolean allow;
+            switch (group.getName()) {
+                case "og+":
+                case "og+founders":
+                case "moderator":
+                case "youtuber":
+                case "builder":
+                    allow = user.getPlayer().hasPermission("nick.all"); break;
+                case "developer":
+                case "admin":
+                case "owner":
+                    allow = false; break;
+                default:
+                    allow = user.getPlayer().hasPermission("nick." + group.getName()) || user.getPlayer().hasPermission("nick.all"); break;
+            }
+            if (!allow) continue;
+
             ChatColor color = ColoredString.getColorOf(group.getDisplayName());
 
             ItemStack stack = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -133,6 +163,7 @@ public class Nick {
         pattern.set('M', new Button() {
             @Override
             public void clicked(Player player) {
+                if (!user.getPlayer().hasPermission("nick.customname")) return;
                 menu.close();
                 AnvilGUI.Builder builder = new AnvilGUI.Builder().plugin(core).text("Enter a name").title("Select a name!")
                         .itemLeft(new ItemBuilder(Material.NAME_TAG).name("&d&l(!) &dEnter a name!").build())
@@ -254,21 +285,16 @@ public class Nick {
     }
 
     public void remove() {
-        boolean changed = false;
-        for (String rank : this.user.getRanks()) {
-            if (rank.equals(this.rank)) changed = true;
-            this.user.getUser().data().remove(Node.builder("tab.sort." + rank).value(false).build());
-            this.user.getUser().data().add(Node.builder("tab.sort." + rank).value(true).build());
-            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + rank).value(false).build());
-            this.user.getUser().data().add(Node.builder("rocketplaceholder." + rank).value(true).build());
-        }
-        if (!changed) {
-            this.user.getUser().data().remove(Node.builder("tab.sort." + this.rank).value(true).build());
-            this.user.getUser().data().add(Node.builder("tab.sort." + this.rank).value(false).build());
-            this.user.getUser().data().remove(Node.builder("rocketplaceholder." + this.rank).value(true).build());
-            this.user.getUser().data().add(Node.builder("rocketplaceholder." + this.rank).value(false).build());
-        }
-        core.getLp().getUserManager().saveUser(this.user.getUser());
+
+        for (Node node : nodesAdded) user.getUser().data().remove(node);
+        for (Node node : nodesRemoved) user.getUser().data().add(node);
+
+        core.getLp().getUserManager().saveUser(user.getUser()).thenRun(() -> {
+            core.getLp().getMessagingService().ifPresent(service -> { service.pushUserUpdate(user.getUser()); });
+        });
+
+        this.nodesRemoved.clear();
+        this.nodesAdded.clear();
 
         this.rank = null; this.name = null; this.skin = null; this.skinData = null;
         this.user.setProfile(this.user.getProfile());

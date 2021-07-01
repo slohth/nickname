@@ -12,6 +12,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
     public boolean canRegister() { return true; }
 
     @Override
+    public boolean persist() { return true; }
+
+    @Override
     public String getIdentifier() { return "nickname"; }
 
     @Override

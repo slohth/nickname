@@ -41,8 +41,9 @@ public class User {
     public void load() throws SQLException {
 
         List<String> groups = new ArrayList<>();
-        for (Group r : user.getInheritedGroups(QueryOptions.defaultContextualOptions())) { groups.add(r.getName()); }
-        groups.add(user.getPrimaryGroup());
+        for (Group group : core.getLp().getGroupManager().getLoadedGroups()) {
+            if (this.getPlayer().hasPermission("group." + group.getName())) groups.add(group.getName());
+        }
 
         this.ranks = groups.toArray(new String[0]);
 

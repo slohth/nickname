@@ -2,6 +2,7 @@ package dev.slohth.nickname;
 
 import dev.slohth.nickname.command.Test;
 import dev.slohth.nickname.database.SQLManager;
+import dev.slohth.nickname.papi.PAPIExpansion;
 import dev.slohth.nickname.user.listener.UserListener;
 import dev.slohth.nickname.user.manager.UserManager;
 import dev.slohth.nickname.utils.vsc.NMSHandler;
@@ -40,8 +41,6 @@ public final class Nickname extends JavaPlugin {
         this.sqlManager = new SQLManager(this);
         this.userManager = new UserManager(this);
         new UserListener(this);
-
-        new Test(this);
 
         switch (VersionControl.version) {
             case "v1_8_R1": {
@@ -83,6 +82,9 @@ public final class Nickname extends JavaPlugin {
                 VersionControl.fieldName = "cs";
         }
         this.lp.getGroupManager().loadAllGroups();
+
+        new PAPIExpansion().register();
+        new Test(this);
 
     }
 
